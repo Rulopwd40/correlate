@@ -2,6 +2,8 @@
   "name": "java-maven",
   "description": "Template for Java projects using Maven",
   "variables": {
+    "projectIdentifier": "<artifactId>{{projectIdentifier}}</artifactId>",
+    "version": "<version>{{version}}</version>"
   },
 
   "detect": {
@@ -13,22 +15,17 @@
     {
       "name": "Build artifact",
       "cmd": "mvn clean install",
-      "workdir": "./"
-    },
-    {
-      "name": "Scan target projects",
-      "cmd": "correlate scan --artifact $1 --version $2",
-      "workdir": "./"
+      "workdir": "$2"
     },
     {
       "name": "Update pom versions",
-      "cmd": "correlate update --artifact $1 --version $2",
+      "cmd": "correlate replace $1",
       "workdir": "./"
     },
     {
       "name": "Recompile dependent projects",
-      "cmd": "mvn clean compile",
-      "workdir": "$3"
+      "cmd": "mvn clean compile -U",
+      "workdir": "./"
     }
   ]
 }
