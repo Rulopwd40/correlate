@@ -69,8 +69,8 @@ func (orch *Orchestrator) Link(identifier string, projectRoot string) error {
 
 	manifest := template.Detect["manifest"]
 	if manifest == "" {
-		log.Println("Error detecting manifest")
-		return errors.New("Error detecting manifest")
+		log.Println("Error: manifest file not specified in template")
+		return errors.New("manifest file not specified in template")
 	}
 
 	log.Printf("Looking for all occurrences of %s in all '%s' files of the project, this might take a while.", identifier, manifest)

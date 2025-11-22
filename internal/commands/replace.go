@@ -13,7 +13,16 @@ var ReplaceCmd = &cobra.Command{
 	Use:   "replace [identifier]",
 	Short: "Replace version in project dependency",
 	Args:  cobra.ExactArgs(1),
-	Long:  "Replace version in project dependency. If --version is not specified, it will search for it in the target manifest.",
+	Long: `Replace the version of a dependency in the project manifest.
+
+If --version is not specified, correlate will automatically detect the version
+from the linked project's manifest. This ensures version consistency across
+all dependent projects.
+
+Examples:
+  correlate replace my-library --version 1.2.3
+  correlate replace my-library -v 2.0.0
+  correlate replace my-library  # Auto-detect version`,
 	Run: func(cmd *cobra.Command, args []string) {
 		runReplace(cmd, args)
 	},

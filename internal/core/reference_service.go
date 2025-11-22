@@ -129,7 +129,7 @@ func (rs *ReferenceService) GetReference(identifier string) (models.Reference, e
 			return ref, nil
 		}
 	}
-	return models.Reference{}, errors.New("No such reference with identifier " + identifier)
+	return models.Reference{}, errors.New("no reference found with identifier: " + identifier)
 }
 
 func mergeUniquePaths(existing, incoming []string) []string {

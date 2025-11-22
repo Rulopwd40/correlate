@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"github.com/Rulopwd40/correlate/internal/logger"
 	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+
+	"github.com/Rulopwd40/correlate/internal/logger"
 )
 
 type Pipeline struct {
@@ -61,7 +62,7 @@ func (p *Pipeline) runTask(ctx context.Context, t Task) error {
 	}
 	info, err := os.Stat(workdir)
 	if err != nil {
-		return fmt.Errorf("workdir no existe: %s", workdir)
+		return fmt.Errorf("workdir does not exist: %s", workdir)
 	}
 	if !info.IsDir() {
 		workdir = filepath.Dir(workdir)

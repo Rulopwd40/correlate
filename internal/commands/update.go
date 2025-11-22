@@ -14,8 +14,20 @@ var UpdateCmd = &cobra.Command{
 	Use:     "update [identifier]",
 	Aliases: []string{"u"},
 	Args:    cobra.RangeArgs(0, 1),
-	Short:   "Update project",
-	Long:    "Concurrent process that gets references versions and update the project",
+	Short:   "Update project dependencies",
+	Long: `Update project dependencies by running the template pipeline.
+
+This command executes the full update pipeline for the specified identifier
+or all linked projects if no identifier is provided. The pipeline typically
+includes building artifacts, updating versions, and recompiling projects.
+
+The update process runs concurrently for multiple projects and provides
+detailed progress information. Check .correlate/logs for detailed task logs.
+
+Examples:
+  correlate update my-library      # Update specific dependency
+  correlate update                 # Update all dependencies
+  correlate u my-library           # Short alias`,
 	Run: func(cmd *cobra.Command, args []string) {
 		runUpdate(cmd, args)
 	},

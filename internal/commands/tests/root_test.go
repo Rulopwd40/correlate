@@ -1,8 +1,9 @@
 package tests
 
 import (
-	"github.com/Rulopwd40/correlate/internal/commands"
 	"testing"
+
+	"github.com/Rulopwd40/correlate/internal/commands"
 )
 
 func TestRootCmd(t *testing.T) {
@@ -10,7 +11,7 @@ func TestRootCmd(t *testing.T) {
 		t.Errorf("Expected Use to be 'correlate', got '%s'", commands.RootCmd.Use)
 	}
 
-	if commands.RootCmd.Short != "Correlate automation CLI" {
+	if commands.RootCmd.Short != "Correlate - Dependency management automation tool" {
 		t.Errorf("Expected Short description, got '%s'", commands.RootCmd.Short)
 	}
 }

@@ -2,9 +2,10 @@ package tests
 
 import (
 	"bytes"
-	"github.com/Rulopwd40/correlate/internal/commands"
 	"log"
 	"testing"
+
+	"github.com/Rulopwd40/correlate/internal/commands"
 
 	"github.com/Rulopwd40/correlate/internal/pipeline"
 	"github.com/spf13/cobra"
@@ -68,7 +69,7 @@ func TestUpdateCmdDefinition(t *testing.T) {
 		t.Errorf("Expected Use to be 'update [identifier]', got '%s'", commands.UpdateCmd.Use)
 	}
 
-	if commands.UpdateCmd.Short != "Update project" {
+	if commands.UpdateCmd.Short != "Update project dependencies" {
 		t.Errorf("Expected Short description, got '%s'", commands.UpdateCmd.Short)
 	}
 

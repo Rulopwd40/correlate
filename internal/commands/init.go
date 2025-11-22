@@ -12,7 +12,16 @@ var InitCmd = &cobra.Command{
 	Use:   "init [identifier] [project-type]",
 	Short: "Initialize a new correlate project",
 	Args:  cobra.ExactArgs(2),
-	Long:  "Sets up a new correlate project in the current directory by creating necessary configuration files.",
+	Long: `Initialize a new correlate project in the current directory.
+
+This command sets up a correlate project by:
+  - Creating configuration files (.correlate/config.json)
+  - Generating a project template based on the specified type
+  - Creating a references file to track dependencies
+
+Examples:
+  correlate init my-library java-maven
+  correlate init demo java-maven`,
 	Run: func(cmd *cobra.Command, args []string) {
 		runInit(cmd, args)
 	},

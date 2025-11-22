@@ -68,7 +68,7 @@ func (t *TemplateService) GenerateProjectTemplate(library string, identifier str
 	template.Detect["searchPattern"] = pattern
 
 	if !bytes.Contains(manifest, []byte(pattern)) {
-		return models.Template{}, errors.New("No match for " + pattern)
+		return models.Template{}, errors.New("no match found for pattern: " + pattern)
 	}
 
 	err = t.SaveTemplate(template)
@@ -243,7 +243,7 @@ func (t *TemplateService) GetPackagerRoot(library string) (string, error) {
 
 	buildFile := template.Detect["manifest"]
 	if buildFile == "" {
-		return "", errors.New("no manifest field found in template -> 'detect'")
+		return "", errors.New("no manifest field found in template 'detect' configuration")
 	}
 
 	// Start searching from current working directory
