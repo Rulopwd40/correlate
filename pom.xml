@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.tp1.ingycalsw</groupId>
 	<artifactId>TodoApp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>TodoApp</name>
 	<description>Proyecto para el TP N°1 de la materia Ingenieria y Calidad de Software</description>
 	<url/>
@@ -74,6 +74,11 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>1.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>isi.deso</groupId>
+			<artifactId>g10-deliverymanagementsystem</artifactId>
+			<version>1.0.5</version>
 		</dependency>
 
 

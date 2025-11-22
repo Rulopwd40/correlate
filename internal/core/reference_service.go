@@ -3,25 +3,31 @@ package core
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/Rulopwd40/correlate/internal/models"
-	"github.com/Rulopwd40/correlate/internal/utils"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/Rulopwd40/correlate/internal/models"
+	"github.com/Rulopwd40/correlate/internal/utils"
 )
 
 type iReferenceService interface {
 	GenerateReferencesFile() error
 	SaveReferences(ref models.References) error
+	GetReferences() (models.References, error)
+	GetReference(identifier string) (models.Reference, error)
 }
 
 type ReferenceService struct {
-	fs iFileService
+	fs  iFileService
+	env *Environment
 }
 
 func NewReferenceService(fs iFileService) *ReferenceService {
-	return &ReferenceService{fs}
+	env := DefaultEnvironment()
+	return &ReferenceService{fs, env}
 }
 
 func (rs *ReferenceService) GenerateReferencesFile() error {
@@ -35,7 +41,7 @@ func (rs *ReferenceService) GenerateReferencesFile() error {
 
 func (rs *ReferenceService) SaveReferences(ref models.References) error {
 	log.Println("Writing references file")
-	dir := CORRELATE_PATH
+	dir := rs.env.GetCorrelatePath()
 	filePath := filepath.Join(dir, "references.json")
 
 	// Asegurar directorio
@@ -43,21 +49,9 @@ func (rs *ReferenceService) SaveReferences(ref models.References) error {
 		return err
 	}
 
-	var fileReferences models.References
-
-	data, err := os.ReadFile(filePath)
+	fileReferences, err := rs.GetReferences()
 	if err != nil {
-		if !os.IsNotExist(err) {
-			return err
-		}
-		fileReferences = models.References{
-			References: []models.Reference{},
-		}
-	} else {
-		fileReferences, err = utils.ParseReferences(data)
-		if err != nil {
-			return err
-		}
+		return err
 	}
 
 	for _, incomingRef := range ref.References {
@@ -101,6 +95,41 @@ func (rs *ReferenceService) SaveReferences(ref models.References) error {
 
 	fmt.Println("references.json generated successfully.")
 	return nil
+}
+
+func (rs *ReferenceService) GetReferences() (models.References, error) {
+	dir := rs.env.GetCorrelatePath()
+	filePath := filepath.Join(dir, "references.json")
+	var fileReferences models.References
+
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return models.References{}, err
+		}
+		fileReferences = models.References{
+			References: []models.Reference{},
+		}
+	} else {
+		fileReferences, err = utils.ParseReferences(data)
+		if err != nil {
+			return models.References{}, err
+		}
+	}
+	return fileReferences, nil
+}
+
+func (rs *ReferenceService) GetReference(identifier string) (models.Reference, error) {
+	references, err := rs.GetReferences()
+	if err != nil {
+		return models.Reference{}, err
+	}
+	for _, ref := range references.References {
+		if ref.Identifier == identifier {
+			return ref, nil
+		}
+	}
+	return models.Reference{}, errors.New("No such reference with identifier " + identifier)
 }
 
 func mergeUniquePaths(existing, incoming []string) []string {

@@ -1,12 +1,13 @@
 package commands
 
 import (
+	"log"
+
 	"github.com/Rulopwd40/correlate/internal/core"
 	"github.com/spf13/cobra"
-	"log"
 )
 
-var linkCmd = &cobra.Command{
+var LinkCmd = &cobra.Command{
 	Use:     "link [identifier] [fullPath]",
 	Aliases: []string{"l"},
 	Short:   "Add a project reference",

@@ -12,9 +12,11 @@ func main() {
 }
 
 func initialize() {
+	env := core.DefaultEnvironment()
+
 	fs := core.NewFileService()
-	cs := core.NewConfigService(fs)
-	ts := core.NewTemplateService(fs)
+	ts := core.NewTemplateService(fs, env)
+	cs := core.NewConfigService(fs, ts)
 	rs := core.NewReferenceService(fs)
 
 	orch := core.NewOrchestrator(fs, cs, ts, rs)
@@ -25,4 +27,5 @@ func initialize() {
 	core.Register(ts)
 	core.Register(rs)
 	core.Register(orch)
+
 }

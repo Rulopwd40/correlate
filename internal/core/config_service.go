@@ -4,29 +4,37 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/Rulopwd40/correlate/internal/models"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/Rulopwd40/correlate/internal/models"
+	"github.com/Rulopwd40/correlate/internal/utils"
 )
 
 type iConfigService interface {
 	GenerateConfig(library, identifier string) (models.Config, error)
 	SaveConfig(config models.Config) error
+	GetConfig() (models.Config, error)
 }
 type ConfigService struct {
-	fs iFileService
+	fs  iFileService
+	ts  iTemplateService
+	env *Environment
 }
 
-func NewConfigService(fs iFileService) *ConfigService {
+func NewConfigService(fs iFileService, ts iTemplateService) *ConfigService {
+	env := DefaultEnvironment()
 	return &ConfigService{
-		fs: fs,
+		fs:  fs,
+		ts:  ts,
+		env: env,
 	}
 }
 
 // Generate Config.json
 func (cf *ConfigService) GenerateConfig(library, identifier string) (models.Config, error) {
-	templateExists := cf.fs.TemplateExists(library)
+	templateExists := cf.ts.TemplateExists(library)
 	if !templateExists {
 		return models.Config{}, errors.New("template does not exist")
 	}
@@ -37,7 +45,7 @@ func (cf *ConfigService) GenerateConfig(library, identifier string) (models.Conf
 
 	var err error
 	log.Println("Getting Packager")
-	config.PackageDirectory, err = cf.fs.GetPackagerRoot(library)
+	config.PackageDirectory, err = cf.ts.GetPackagerRoot(library)
 	if err != nil {
 		return models.Config{}, err
 	}
@@ -51,7 +59,7 @@ func (cf *ConfigService) GenerateConfig(library, identifier string) (models.Conf
 
 func (cf *ConfigService) SaveConfig(config models.Config) error {
 	log.Println("Writing config file")
-	dir := CORRELATE_PATH
+	dir := cf.env.GetCorrelatePath()
 
 	data, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
@@ -69,4 +77,23 @@ func (cf *ConfigService) SaveConfig(config models.Config) error {
 	}
 	fmt.Println("config.json generated successfully.")
 	return nil
+}
+func (cf *ConfigService) GetConfig() (models.Config, error) {
+	filePath := filepath.Join(cf.env.GetCorrelatePath(), "config.json")
+
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return models.Config{}, fmt.Errorf("config.json not found at %s", filePath)
+	}
+
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return models.Config{}, err
+	}
+
+	config, err := utils.ParseConfig(data)
+	if err != nil {
+		return models.Config{}, err
+	}
+
+	return config, nil
 }

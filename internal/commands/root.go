@@ -4,16 +4,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
+var RootCmd = &cobra.Command{
 	Use:   "correlate",
 	Short: "Correlate automation CLI",
 }
 
 func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
+	cobra.CheckErr(RootCmd.Execute())
 }
 
 func init() {
-	rootCmd.AddCommand(initCmd)
-	rootCmd.AddCommand(linkCmd)
+	RootCmd.AddCommand(InitCmd)
+	RootCmd.AddCommand(LinkCmd)
+	RootCmd.AddCommand(ReplaceCmd)
+	RootCmd.AddCommand(UpdateCmd)
 }

@@ -1,14 +1,15 @@
 package commands
 
 import (
-	"github.com/Rulopwd40/correlate/internal/core"
 	"log"
+
+	"github.com/Rulopwd40/correlate/internal/core"
 
 	"github.com/spf13/cobra"
 )
 
-var initCmd = &cobra.Command{
-	Use:   "init",
+var InitCmd = &cobra.Command{
+	Use:   "init [identifier] [project-type]",
 	Short: "Initialize a new correlate project",
 	Args:  cobra.ExactArgs(2),
 	Long:  "Sets up a new correlate project in the current directory by creating necessary configuration files.",
@@ -25,8 +26,8 @@ func runInit(cmd *cobra.Command, args []string) {
 		log.Println("Error getting orchestrator:", err)
 	}
 
-	library := args[0]
-	identifier := args[1]
+	library := args[1]
+	identifier := args[0]
 
 	err = orch.Init(library, identifier)
 	if err != nil {
