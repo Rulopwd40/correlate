@@ -1,0 +1,34 @@
+
+{
+  "name": "java-maven",
+  "description": "Template for Java projects using Maven",
+  "variables": {
+    "projectIdentifier": "<artifactId>{{projectIdentifier}}</artifactId>",
+    "version": "<version>{{version}}</version>"
+  },
+  "detect": {
+    "manifest": "pom.xml",
+    "searchPattern": "<artifactId>{{identifier}}</artifactId>"
+  },
+  "steps": [
+    {
+      "name": "Build artifact",
+      "cmd": "mvn clean install",
+      "workdir": "{{sourceDir}}",
+      "variables": {
+        "sourceDir": "source.directory",
+        "targetDir": "target.directory"
+      }
+    },
+    {
+      "name": "Update pom versions",
+      "cmd": "correlate replace {{identifier}} {{version}}",
+      "workdir": "{{targetDir}}",
+      "variables": {
+        "identifier": "reference.identifier",
+        "version": "reference.version",
+        "targetDir": "target.directory"
+      }
+    }
+  ]
+}

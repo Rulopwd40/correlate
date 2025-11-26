@@ -1,7 +1,7 @@
 package core
 
 import (
-	"context"
+	stdcontext "context"
 	"errors"
 	"log"
 	"path/filepath"
@@ -163,6 +163,11 @@ func (orch *Orchestrator) Update(identifier string) error {
 		return err
 	}
 
+	cfg, err := orch.cfg.GetConfig()
+	if err != nil {
+		return err
+	}
+
 	orch.eventStream = make(chan pipeline.Event)
 
 	var references []models.Reference
@@ -199,7 +204,14 @@ func (orch *Orchestrator) Update(identifier string) error {
 				go func() {
 					defer wg.Done()
 
-					tasks, err := utils.MakeTasks(template.Steps, ref, dir)
+					// Build context with all available paths
+					context := map[string]string{
+						"sourceDir":         cfg.PackageDirectory, // Where correlate init was run (the library being developed)
+						"targetDir":         dir,                  // Where the consumer/dependent project is
+						"projectIdentifier": ref.Identifier,       // The identifier from references.json
+					}
+
+					tasks, err := utils.MakeTasks(template.Steps, ref, context)
 					if err != nil {
 						orch.eventStream <- pipeline.Event{
 							Type:    pipeline.EventError,
@@ -215,7 +227,7 @@ func (orch *Orchestrator) Update(identifier string) error {
 						EventSink:  orch.eventStream,
 					}
 
-					p.Run(context.Background())
+					p.Run(stdcontext.Background())
 				}()
 			}
 		}

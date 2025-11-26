@@ -40,7 +40,7 @@ func (e *Executor) runTask(t Task) {
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command("cmd.exe", "/C", t.Cmd)
 	} else {
-		cmd = exec.Command("sh", "-c", t.Cmd) // <-- ESTE es el correcto
+		cmd = exec.Command("sh", "-c", t.Cmd)
 	}
 
 	cmd.Dir = t.Workdir

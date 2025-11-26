@@ -5,7 +5,6 @@
     "projectIdentifier": "<artifactId>{{projectIdentifier}}</artifactId>",
     "version": "<version>{{version}}</version>"
   },
-
   "detect": {
     "manifest": "pom.xml",
     "searchPattern": "<artifactId>{{identifier}}</artifactId>"
@@ -13,19 +12,19 @@
 
   "steps": [
     {
-      "name": "Build artifact",
-      "cmd": "mvn clean install",
-      "workdir": "$2"
+      "name": "Build dependent project first",
+      "cmd": "mvn clean install -Dmaven.test.skip=true",
+      "workdir": "{{targetDir}}"
     },
     {
       "name": "Update pom versions",
-      "cmd": "correlate replace $2 $3",
-      "workdir": "./"
+      "cmd": "correlate replace {{projectIdentifier}}",
+      "workdir": "{{targetDir}}"
     },
     {
-      "name": "Recompile dependent projects",
-      "cmd": "mvn clean compile",
-      "workdir": "./"
+      "name": "Recompile dependent project",
+      "cmd": "mvn clean compile -Dmaven.test.skip=true",
+      "workdir": "{{sourceDir}}"
     }
   ]
 }
